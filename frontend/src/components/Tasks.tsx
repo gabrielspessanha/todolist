@@ -1,12 +1,11 @@
 "use client"
 import { TasksContext } from "@/context/TasksContext";
 import { TaskProps, GetAllTaks, formatDate, DeleteTask, updateTask } from "@/services/api";
-import { FormEvent, ReactEventHandler, useContext, useEffect, useState } from "react";
-import { MdModeEditOutline, MdDelete  } from "react-icons/md";
+import { useContext, useEffect } from "react";
+import { MdDelete  } from "react-icons/md";
 
 export const Tasks = () => {
   const {tasks, setTasks} = useContext(TasksContext)
-  const [newTitle, setNewTitle] = useState('')
 
   async function handleDelete(id: number){
     await DeleteTask(id)
@@ -22,9 +21,6 @@ export const Tasks = () => {
     await updateTask(task,setTasks)
   }
 
-  async function handleUpdateTitle(){
-    setNewTitle('A')
-  }
 
   useEffect(()=>{
     GetAllTaks(setTasks)
@@ -44,11 +40,11 @@ export const Tasks = () => {
           </tr>
         </thead>
 
-        <tbody className="text-gray-900">
+        <tbody className="text-gray-900" >
 
           {tasks?.length === 0 || tasks === undefined ? <tr><td><p className="text-white">Sem Tarefas</p>:</td></tr>:tasks.map((task: TaskProps)=>(
-            <tr key={task.id} className="bg-white text-center rounded-sm shadow-md mb-5">
-              {newTitle === ''? <td>{task.title}</td>: 'a'}
+            <tr key={task.id} className="bg-white border h-10 text-center rounded-sm shadow-md m-2">
+              <td>{task.title}</td>
               <td>{formatDate(task.created_at)}</td>
               <td>
                 <select 
@@ -56,15 +52,14 @@ export const Tasks = () => {
                   onChange={(event)=> handleUpdate(task.id, event.target.value)} 
                   className=" from-neutral-600 "
                 >
-                  <option className="" value="pendente">Pendente</option>
-                  <option className="" value="em andamento">Em andamento</option>
-                  <option className="" value="concluida">Concluída</option>
+                  <option className="bg-neutral-300" value="pendente">Pendente</option>
+                  <option className="bg-blue-300" value="em andamento">Em andamento</option>
+                  <option className="bg-green-500" value="concluida">Concluída</option>
                 </select>
               </td>
 
-              <td className="flex justify-center gap-2">
-                <button onClick={()=> handleUpdateTitle}><MdModeEditOutline  size={30} color="orange" /></button>
-                <button onClick={()=> handleDelete(task.id)}><MdDelete size={30} color="red" /></button>
+              <td className="flex justify-center items-center">
+                <button className="h-10" onClick={()=> handleDelete(task.id)}><MdDelete size={30} color="red" /></button>
 
               </td>
             </tr>
